@@ -13,6 +13,10 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url('../src/assets/images/bg01.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 i{
@@ -21,6 +25,40 @@ i{
 }
 ul{
   list-style: none;
+}
+
+.container{
+  width: 360px;
+  border-radius: 15px;
+  position: relative;
+}
+
+.shape{
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.shape-1{
+  background: radial-gradient(circle at 35px 65px, #9b22ea, #005);
+  left: -65px;
+  top: -65px;
+}
+
+.shape-2{
+  background: radial-gradient(circle at 45px 90px, #ea22b1, #111);
+  right: -65px;
+  bottom: -65px;
+}
+
+.shape-3{
+  width: 60px;
+  height: 60px;
+  background: #08e2ff;
+  right: 7px;
+  top: 10px;
+  filter: blur(20px);
 }
 
 main{
