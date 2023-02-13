@@ -1,7 +1,7 @@
 .list{
     width: 100%;
     position: absolute;
-    bottom: 0;
+    bottom: -60%;
     left: 0;
     background:#fff ;
     color: #080710;
@@ -9,6 +9,10 @@
     transition: all 0.2s ease-out;
     border-radius: 10px;
     z-index: 10;
+}
+
+.list.show{
+    bottom: 0;
 }
 
 .list .header{
@@ -69,3 +73,4 @@
 .list ul li.playing{
     background: papayawhip;
 }
+

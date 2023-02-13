@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../assets/css/card.css';
 import music from '../assets/data';
+import { timer } from '../utils/timer';
 
-const Card = ({props:{musicNumber,setMusicNumber}}) => {
-    console.log(music)
+const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
+    const [duration,setDuration] = useState(0)
+
+    const handleLoadStart = (e) =>{
+        const src = e.nativeEvent.srcElement.src
+        const audio = new Audio(src);
+        audio.onloadedmetadata = function(){
+            if(audio.readyState > 0){
+                setDuration(audio.duration)
+            }
+        }
+    }
+
     return (
         <div className="card">
             <div className="nav">
                 <i className="material-icons">expand_more</i>
                 <span>Now Playing {musicNumber+1}/{music.length}</span>
-                <i className="material-icons">queue_music</i>
+                <i className="material-icons"
+                    onClick={()=> setOpen(true)}
+                >queue_music</i>
             </div>
 
             <div className="img">
@@ -27,7 +41,7 @@ const Card = ({props:{musicNumber,setMusicNumber}}) => {
 
             <div className="timer">
                 <span>00:00</span>
-                <span>03:43</span>
+                <span>{timer(duration)}</span>
             </div>
 
             <div className="controls">
@@ -52,7 +66,9 @@ const Card = ({props:{musicNumber,setMusicNumber}}) => {
 
             </div>
 
-            <audio src={music[musicNumber].src} hidden ></audio>
+            <audio src={music[musicNumber].src} hidden 
+                onLoadStart={handleLoadStart}
+            />
 
         </div>
     )
