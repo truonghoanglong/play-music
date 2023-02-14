@@ -4,7 +4,9 @@ import music from '../assets/data';
 import { timer } from '../utils/timer';
 
 const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
-    const [duration,setDuration] = useState(0)
+    const [duration,setDuration] = useState(1)
+    const [currentTime,setCurrentTiime] = useState(0);
+    const [play,setPlay] = useState(false);
 
     const handleLoadStart = (e) =>{
         const src = e.nativeEvent.srcElement.src
@@ -40,7 +42,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             </div>
 
             <div className="timer">
-                <span>00:00</span>
+                <span>{timer(currentTime)}</span>
                 <span>{timer(duration)}</span>
             </div>
 
@@ -49,8 +51,10 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
 
                 <i className="material-icons" id="prev">skip_previous</i>
 
-                <div className="play">
-                    <i className="material-icons">play_arrow</i>
+                <div className="play" onClick={()=> setPlay( prev => !prev )}>
+                    <i className="material-icons">
+                        {play ? 'pause' : 'play_arrow'}
+                    </i>
                 </div>
 
                 <i className="material-icons" id="next">skip_next</i>
