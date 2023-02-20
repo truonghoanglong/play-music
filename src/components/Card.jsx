@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../assets/css/card.css';
 import music from '../assets/data';
 import { timer } from '../utils/timer';
@@ -8,6 +8,8 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const [currentTime,setCurrentTiime] = useState(0);
     const [play,setPlay] = useState(false);
 
+    const audioRef = useRef()
+
     const handleLoadStart = (e) =>{
         const src = e.nativeEvent.srcElement.src
         const audio = new Audio(src);
@@ -15,6 +17,16 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             if(audio.readyState > 0){
                 setDuration(audio.duration)
             }
+        }
+    }
+
+    const handlePlayingAudio = () => {
+        if(play){
+            audioRef.current.pause();
+            setPlay(!play)
+        }else{
+            audioRef.current.play();
+            setPlay(!play)
         }
     }
 
@@ -51,7 +63,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
 
                 <i className="material-icons" id="prev">skip_previous</i>
 
-                <div className="play" onClick={()=> setPlay( prev => !prev )}>
+                <div className="play" onClick={handlePlayingAudio}>
                     <i className="material-icons">
                         {play ? 'pause' : 'play_arrow'}
                     </i>
@@ -70,7 +82,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
 
             </div>
 
-            <audio src={music[musicNumber].src} hidden 
+            <audio src={music[musicNumber].src} hidden ref={audioRef}
                 onLoadStart={handleLoadStart}
             />
 
