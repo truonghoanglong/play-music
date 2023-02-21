@@ -7,6 +7,8 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const [duration,setDuration] = useState(1)
     const [currentTime,setCurrentTiime] = useState(0);
     const [play,setPlay] = useState(false);
+    const [showvolume,setShowvolume] = useState(false)
+    const [volume,setVolum] = useState(50);
 
     const audioRef = useRef()
 
@@ -18,6 +20,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
                 setDuration(audio.duration)
             }
         }
+        if(play) { audioRef.current.play()}
     }
 
     const handlePlayingAudio = () => {
@@ -28,6 +31,24 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             audioRef.current.play();
             setPlay(!play)
         }
+    }
+
+    const handleTimeUpdate = () => {
+        const currentTime = audioRef.current.currentTime ;
+        setCurrentTiime(currentTime)
+    }
+
+    const changeCurrentTime = (e) => {
+        const currentTime = Number(e.target.value)
+        audioRef.current.currentTime = currentTime
+    }
+
+    const handleNextPre = (n) => {
+        setMusicNumber( value => {
+            if(n>0)
+                return value + n > music.length - 1 ? 0 : value + n;
+            return value + n < 0 ? music.length - 1 : value + n;
+        })
     }
 
     return (
@@ -50,7 +71,10 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             </div>
 
             <div className="progess">
-                <input type="range" min={0} max={100} />
+                <input type="range" min={0} max={duration} 
+                    value={currentTime} 
+                    onChange = { e => changeCurrentTime(e)}
+                />
             </div>
 
             <div className="timer">
@@ -61,7 +85,9 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             <div className="controls">
                 <i className="material-icons">repeat</i>
 
-                <i className="material-icons" id="prev">skip_previous</i>
+                <i className="material-icons" id="prev"
+                    onClick={()=> handleNextPre(-1)}
+                >skip_previous</i>
 
                 <div className="play" onClick={handlePlayingAudio}>
                     <i className="material-icons">
@@ -69,21 +95,28 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
                     </i>
                 </div>
 
-                <i className="material-icons" id="next">skip_next</i>
+                <i className="material-icons" id="next"
+                    onClick={()=> handleNextPre(+1)}
+                >skip_next</i>
 
-                <i className="material-icons" id="next">volume_up</i>
+                <i className="material-icons" 
+                    onClick={ () => setShowvolume( prev => ! prev )}
+                >volume_up</i>
 
-                <div className="volume">
+                <div className={`volume ${showvolume ? 'show' : ''}`}>
                     <i className="material-icons" id="next">volume_up</i>
-                    <input type="range" min={0} max={100} />
-                    <span>50</span>
+                    <input type="range" min={0} max={100} 
+                        onChange={e => setVolum(e.target.value)}
+                    />
+                    <span>{volume}</span>
                 </div>
 
 
             </div>
 
             <audio src={music[musicNumber].src} hidden ref={audioRef}
-                onLoadStart={handleLoadStart}
+                onLoadStart={handleLoadStart} 
+                onTimeUpdate={handleTimeUpdate}
             />
 
         </div>
