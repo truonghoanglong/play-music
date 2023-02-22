@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../assets/css/card.css';
 import music from '../assets/data';
 import { timer } from '../utils/timer';
@@ -9,6 +9,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const [play,setPlay] = useState(false);
     const [showvolume,setShowvolume] = useState(false)
     const [volume,setVolum] = useState(50);
+    const [repeat,setRepeat] = useState('repeat')
 
     const audioRef = useRef()
 
@@ -51,6 +52,48 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
         })
     }
 
+    useEffect(()=>{
+        audioRef.current.volume = volume / 100;
+    },[volume])
+
+    const handleRepeat = () => {
+        setRepeat( value => {
+            switch (value) {
+                case 'repeat':
+                    return 'repeat_one';
+                case 'repeat_one':
+                    return 'shuffle'
+                default:
+                    return 'repeat'
+            }
+        })
+    }
+
+    const EndedAudio = () => {
+        switch (repeat) {
+            case 'repeat_one':
+                return audioRef.current.play();
+            
+            case 'shuffle':
+                return handleShuffle();
+
+            default:
+                return handleNextPre(1);
+        }
+    }
+
+    const handleShuffle = () =>{
+        const num = randomNumber()
+        setMusicNumber(num)
+    }
+
+    const randomNumber = () => {
+        const number = Math.floor(Math.random() * (music.length-1 ))
+        if(number === musicNumber)
+            return randomNumber()
+        return number
+    }
+
     return (
         <div className="card">
             <div className="nav">
@@ -83,7 +126,9 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             </div>
 
             <div className="controls">
-                <i className="material-icons">repeat</i>
+                <i className="material-icons" onClick={handleRepeat}>
+                    {repeat}
+                </i>
 
                 <i className="material-icons" id="prev"
                     onClick={()=> handleNextPre(-1)}
@@ -104,9 +149,14 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
                 >volume_up</i>
 
                 <div className={`volume ${showvolume ? 'show' : ''}`}>
-                    <i className="material-icons" id="next">volume_up</i>
+                    <i className="material-icons" onClick={() => setVolum(v => v > 0 ? 0 : 100)}>
+                        {volume === 0 ? 'volume_off' : 'volume_up'}
+                    </i>
+
+                    
                     <input type="range" min={0} max={100} 
-                        onChange={e => setVolum(e.target.value)}
+                        onChange={e => setVolum(Number(e.target.value))}
+                        value={volume}
                     />
                     <span>{volume}</span>
                 </div>
@@ -117,6 +167,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             <audio src={music[musicNumber].src} hidden ref={audioRef}
                 onLoadStart={handleLoadStart} 
                 onTimeUpdate={handleTimeUpdate}
+                onEnded={EndedAudio}
             />
 
         </div>
