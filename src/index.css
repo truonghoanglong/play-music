@@ -70,3 +70,14 @@ main{
   position: relative;
   backdrop-filter: blur(3px);
 }
+
+input[type]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  -moz-appearance:none ;
+  appearance: none;
+  background-color: #4286f4;
+  border-radius: 50px;
+  cursor: grab;
+  width: 10px;
+  height: 10px;
+}

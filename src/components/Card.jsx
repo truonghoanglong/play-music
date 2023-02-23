@@ -12,6 +12,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const [repeat,setRepeat] = useState('repeat')
 
     const audioRef = useRef()
+    const canvasRef = useRef()
 
     const handleLoadStart = (e) =>{
         const src = e.nativeEvent.srcElement.src
@@ -105,7 +106,10 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             </div>
 
             <div className="img">
-                <img src={music[musicNumber].thumbnail} alt="" />
+                <img src={music[musicNumber].thumbnail} alt="" 
+                    className={`${play ? 'playing' : ''}`}
+                />
+                <canvas ref={canvasRef}/>
             </div>
 
             <div className="details">
@@ -117,6 +121,11 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
                 <input type="range" min={0} max={duration} 
                     value={currentTime} 
                     onChange = { e => changeCurrentTime(e)}
+                    style={{
+                        background:`linear-graduebt(to right,
+                            #3264fe ${currentTime/duration*100}%,
+                            #e5e5e5 &{currentTime/duration*100}%)`
+                    }}
                 />
             </div>
 
@@ -157,6 +166,11 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
                     <input type="range" min={0} max={100} 
                         onChange={e => setVolum(Number(e.target.value))}
                         value={volume}
+                        style={{
+                            background:`linear-graduebt(to right,
+                                #3264fe ${volume}%,
+                                #e5e5e5 &{volume}%)`
+                        }}
                     />
                     <span>{volume}</span>
                 </div>
