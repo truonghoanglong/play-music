@@ -4,7 +4,7 @@ import List from "./components/List";
 const App = () => {
 
   const [musicNumber,setMusicNumber] = useState(0)
-  const [open,setOpen] = useState(true)
+  const [open,setOpen] = useState(false)
   return (
     <div className="container">
       <div className="shape shape-1"></div>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../assets/css/card.css';
 import music from '../assets/data';
 import { timer } from '../utils/timer';
+import { visualizer } from '../utils/visualizer';
 
 const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const [duration,setDuration] = useState(1)
@@ -15,17 +16,19 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
     const canvasRef = useRef()
 
     const handleLoadStart = (e) =>{
-        const src = e.nativeEvent.srcElement.src
-        const audio = new Audio(src);
-        audio.onloadedmetadata = function(){
-            if(audio.readyState > 0){
-                setDuration(audio.duration)
-            }
-        }
+        setDuration(audioRef.current.duration)
+        // const src = e.nativeEvent.srcElement.src
+        // const audio = new Audio(src);
+        // audio.onloadedmetadata = function(){
+        //     if(audio.readyState > 0){
+        //         setDuration(audio.duration)
+        //     }
+        // }
         if(play) { audioRef.current.play()}
     }
 
     const handlePlayingAudio = () => {
+        visualizer(audioRef.current, canvasRef.current, play)
         if(play){
             audioRef.current.pause();
             setPlay(!play)
@@ -179,7 +182,7 @@ const Card = ({props:{musicNumber,setMusicNumber,setOpen}}) => {
             </div>
 
             <audio src={music[musicNumber].src} hidden ref={audioRef}
-                onLoadStart={handleLoadStart} 
+                onLoadedData={handleLoadStart} 
                 onTimeUpdate={handleTimeUpdate}
                 onEnded={EndedAudio}
             />
